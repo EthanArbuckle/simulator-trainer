@@ -385,14 +385,16 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/simulator-trainer.app",
 			);
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/.simulator-trainer-codesigned",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python3 SMJobBlessUtil.py check $BUILT_PRODUCTS_DIR/simulator-trainer.app\n";
+			shellScript = "# Code sign the main application bundle\ncodesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY_NAME\" \"$BUILT_PRODUCTS_DIR/simulator-trainer.app\"\n\n# Verify SMJobBless configuration\npython3 SMJobBlessUtil.py check \"$BUILT_PRODUCTS_DIR/simulator-trainer.app\"\n\n# Create output marker file\ntouch \"$BUILT_PRODUCTS_DIR/.simulator-trainer-codesigned\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
