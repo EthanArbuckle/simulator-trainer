@@ -392,7 +392,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "python3 SMJobBlessUtil.py check $BUILT_PRODUCTS_DIR/simulator-trainer.app\n";
+			shellScript = "python3 SMJobBlessUtil.py setreq $BUILT_PRODUCTS_DIR/simulator-trainer.app $BUILT_PRODUCTS_DIR/simulator-trainer.app/Contents/Info.plist $PROJECT_DIR/SimRuntimeHelper/SimRuntimeHelper-Info.plist\n\ncp $BUILT_PRODUCTS_DIR/simulator-trainer.app/Contents/Info.plist $PROJECT_DIR/simulator-trainer/Info.plist\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
