@@ -108,6 +108,7 @@
 				"Supporting Files/bootstrap/cycript_server.dylib",
 				"Supporting Files/bootstrap/CydiaSubstrate",
 				"Supporting Files/bootstrap/FLEX.dylib",
+				"Supporting Files/bootstrap/libcycript_mac.dylib",
 				"Supporting Files/bootstrap/libcycript.dylib",
 				"Supporting Files/bootstrap/libhooker.dylib",
 				"Supporting Files/bootstrap/libobjsee.dylib",
