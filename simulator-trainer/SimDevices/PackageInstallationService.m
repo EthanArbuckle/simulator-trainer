@@ -268,32 +268,35 @@
 }
 
 - (void)installAppBundleAtPath:(NSString *)appPath toDevice:(BootedSimulatorWrapper *)device completion:(void (^)(NSError * _Nullable error))completion {
-    NSString *tempAppPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[appPath lastPathComponent]];
-    if (![[NSFileManager defaultManager] copyItemAtPath:appPath toPath:tempAppPath error:nil]) {
-        NSLog(@"Failed to copy app bundle to temporary location");
+    NSString *appFileNameWithoutExtension = [[appPath lastPathComponent] stringByDeletingPathExtension];
+    NSString *randomizedName = [NSString stringWithFormat:@"%@-%@.%@", appFileNameWithoutExtension, [[NSUUID UUID] UUIDString], [appPath pathExtension]];
+    NSString *tmpAppPath = [NSTemporaryDirectory() stringByAppendingPathComponent:randomizedName];
+    NSError *copyError = nil;
+    if (![[NSFileManager defaultManager] copyItemAtPath:appPath toPath:tmpAppPath error:&copyError]) {
+        NSLog(@"Failed to copy app bundle to temporary location: %@", copyError);
         if (completion) {
-            completion([NSError errorWithDomain:NSCocoaErrorDomain code:1 userInfo:@{NSLocalizedDescriptionKey: @"Failed to copy app bundle"}]);
+            completion(copyError);
         }
+        
         return;
     }
     
-    convertPlatformToSimulator(tempAppPath.UTF8String);
+    convertPlatformToSimulator(tmpAppPath.UTF8String);
     
-    NSError *error = nil;
-    NSURL *tmpAppUrl = [NSURL fileURLWithPath:tempAppPath];
-    SEL _sel = sel_registerName("installApplication:withOptions:error:");
-    ((void (*)(id, SEL, NSURL *, NSDictionary *, NSError **))objc_msgSend)(device.coreSimDevice, _sel, tmpAppUrl, nil, &error);
-    if (error) {
-        NSLog(@"Failed to install app bundle: %@", error);
-        if (completion) {
-            completion(error);
-        }
-        return;
+    NSError *installError = nil;
+    NSURL *tmpAppUrl = [NSURL fileURLWithPath:tmpAppPath];
+    // [device.coreSimDevice installApplication:tmpAppUrl withOptions:nil error:&installError]
+    ((void (*)(id, SEL, NSURL *, NSDictionary *, NSError **))objc_msgSend)(device.coreSimDevice, sel_registerName("installApplication:withOptions:error:"), tmpAppUrl, nil, &installError);
+    
+    if (installError) {
+        NSLog(@"Failed to install app bundle: %@", installError);
     }
     
     if (completion) {
-        completion(nil);
+        completion(installError);
     }
+    
+    [[NSFileManager defaultManager] removeItemAtPath:tmpAppPath error:nil];
 }
 
 @end

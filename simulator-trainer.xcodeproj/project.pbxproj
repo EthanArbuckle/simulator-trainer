@@ -89,9 +89,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Common/CommandRunner.m,
+				Common/Injection/AppBinaryPatcher.m,
+				Common/Injection/tmpfs_overlay.c,
 				Common/SimLogging.m,
-				Injection/AppBinaryPatcher.m,
-				Injection/tmpfs_overlay.c,
 				PrivilegedHelper/SimInjectionOptions.m,
 				PrivilegedHelper/SimRuntimeHelperProtocol.m,
 				SimDevices/BootedSimulatorWrapper.m,
