@@ -1,0 +1,29 @@
+name: Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: |
+          xcodebuild \
+            -project simulator-trainer.xcodeproj \
+            -scheme simulator-trainer \
+            -configuration Release \
+            -destination 'platform=macOS,arch=arm64' \
+            -derivedDataPath build \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            clean build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: simulator-trainer
+          path: build/Build/Products/Release/*.app
